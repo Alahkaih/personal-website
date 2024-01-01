@@ -1,5 +1,4 @@
 import Image from "next/image"
-import {tex} from '@mui/material'
 export default function Home() {
   return (
     <div className="flex h-screen w-screen items-center justify-center">

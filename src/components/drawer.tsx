@@ -12,12 +12,12 @@ export default function HomeDrawer() {
     return (
         <div>
             <div className="fixed top-0 left-0">
-            <Button onClick={() => setOpen(true)}><Menu sx={{color: "red"}}/></Button>
+            <Button onClick={() => setOpen(true)}><Menu sx={{color: "white"}}/></Button>
             </div>
             
             <div>
                 <Drawer open={open} anchor="left" onClose={() => setOpen(false)}>
-                    <Button onClick={() => setOpen(false)} sx={{color: "red"}}>Close</Button>
+                    <Button onClick={() => setOpen(false)} sx={{color: "black"}}>Close</Button>
                     {getList(list, router)}
                 </Drawer>
             </div>
