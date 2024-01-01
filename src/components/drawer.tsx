@@ -1,7 +1,7 @@
 "use client"
 
 import { Button, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
-import * as icons from '@mui/icons-material'
+import { Home, Menu, Info, Code, Email, Description } from '@mui/icons-material'
 import {useState} from "react"
 import { useRouter } from "next/navigation"
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime"
@@ -11,17 +11,13 @@ export default function HomeDrawer() {
     const router = useRouter()
     return (
         <div>
-            <div className="fixed top-0 left-0 z-50">
-            <Button onClick={() => setOpen(true)}><icons.Menu/></Button>
+            <div className="fixed top-0 left-0">
+            <Button onClick={() => setOpen(true)}><Menu sx={{color: "red"}}/></Button>
             </div>
             
-            <div className="z-0">
-                <Drawer 
-                    open={open}
-                    anchor="left"
-                    onClose={() => setOpen(false)}
-                >
-                    <Button onClick={() => setOpen(false)}>Close</Button>
+            <div>
+                <Drawer open={open} anchor="left" onClose={() => setOpen(false)}>
+                    <Button onClick={() => setOpen(false)} sx={{color: "red"}}>Close</Button>
                     {getList(list, router)}
                 </Drawer>
             </div>
@@ -32,13 +28,12 @@ export default function HomeDrawer() {
 const getList = (listInputs: listInput[], router: AppRouterInstance) => {
     
     const lists = listInputs.map((listInput, index) => {
-        const IconComponent = icons[listInput.icon]
         return (
         <Link href={`/${listInput.urlOverride ?? listInput.name.toLowerCase()}`} key={index}>
             <ListItem disablePadding>
                 <ListItemButton onClick={() => router.push(`/${listInput.name}`)}>
                     <ListItemIcon>
-                        <IconComponent />
+                        {listInput.icon}
                     </ListItemIcon>
                     <ListItemText primary={listInput.name} />
                 </ListItemButton>
@@ -51,30 +46,30 @@ const getList = (listInputs: listInput[], router: AppRouterInstance) => {
 
 type listInput = {
     name: string,
-    icon: keyof typeof icons
+    icon: JSX.Element
     urlOverride?: string
 }
 
 const list: listInput[] = [
     {
         name: "Home",
-        icon: "Home",
+        icon: <Home/>,
         urlOverride: "/"
     },
     {
         name: "About",
-        icon: "Info"
+        icon: <Info/>
     },
     {
         name: "Projects",
-        icon: "Code"
+        icon: <Code/>
     },
     {
         name: "Contact",
-        icon: "Email"
+        icon: <Email/>
     },
     {
         name: "Resume",
-        icon: "Description"
+        icon: <Description/>
     }
 ]
