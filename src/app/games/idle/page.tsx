@@ -10,7 +10,7 @@ export default function Idle() {
         const interval = setInterval(() => 
             dispatch({
                 type: "updateAllResources"
-            }), 10);
+            }), 1000);
     
         return () => clearInterval(interval);
       }, []);
