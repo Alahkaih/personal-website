@@ -28,8 +28,7 @@ export default function Idle() {
     });
 
     const getResourceComponents = (resources: typeof state.resources) => {
-        return Object.entries(resources).map(entry => {
-            const [key, value] = entry
+        return Object.keys(resources).map(key => {
             return <Resource
                 key={key}
                 state={state}
