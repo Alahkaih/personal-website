@@ -1,10 +1,19 @@
 "use client";
 import { Button } from "@mui/material";
-import { Dispatch, useReducer, useState } from "react";
+import { Dispatch, useEffect, useReducer, useState } from "react";
 import { IdleGameReducerAction, IdleGameState, idleGameReducer } from "./reducer";
 
 export default function Idle() {
     const resources = ["Iron", "Worker", "Mine"]
+
+    useEffect(() => {
+        const interval = setInterval(() => 
+            dispatch({
+                type: "updateAllResources"
+            }), 10);
+    
+        return () => clearInterval(interval);
+      }, []);
     
     const [state, dispatch] = useReducer(idleGameReducer, {
         gold: 0,
