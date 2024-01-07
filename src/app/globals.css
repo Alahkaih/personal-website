@@ -17,6 +17,11 @@
 }
 
 body {
-    color: rgb(var(--foreground-rgb));
+    /* color: rgb(var(--foreground-rgb)); */
     background: linear-gradient(to bottom, purple, white);
+    background-attachment: fixed;
+}
+
+div {
+    border: 1px solid red;
 }

@@ -2,6 +2,8 @@
 import { Button } from "@mui/material";
 import { Dispatch, useEffect, useReducer, useState } from "react";
 import { IdleGameReducerAction, IdleGameState, idleGameReducer } from "./reducer";
+import CustomButton from "@/components/idleGame/customResourceButton";
+import Resource from "@/components/idleGame/resource";
 
 export default function Idle() {
     const resources = ["Iron", "Worker", "Mine"]
@@ -72,70 +74,5 @@ export default function Idle() {
     );
 }
 
-type resourceProps = {
-    state: IdleGameState;
-    updateState: Dispatch<IdleGameReducerAction>;
-    resourceId: number
-};
-function Resource({
-    state,
-    updateState,
-    resourceId,
-}: resourceProps) {
-    const gatherResource = () => {
-        updateState({
-            type: "gatherResource",
-            resourceId: resourceId,
-        });
-    }
-    const buyResource = () => {
-        updateState({
-            type: "buyResource",
-            resourceId: resourceId,
-        });
-    };
-    const {baseCost, costMultiplier, count, name} = state.resources[resourceId];
-    return (
-        <div className="flex flex-col w-1/4 pt-10">
-            <CustomButton
-                primary={name}
-                secondary={count}
-                color="white"
-                onClick={gatherResource}
-            />
-            <CustomButton
-                primary={`Buy`}
-                secondary={costMultiplier * count + baseCost}
-                color="purple"
-                onClick={buyResource}
-            />
-        </div>
-    );
-}
 
-type customButtonProps = {
-    primary: string;
-    secondary: string | number;
-    color: string;
-    onClick: () => void;
-};
-function CustomButton({
-    primary,
-    secondary,
-    color,
-    onClick,
-}: customButtonProps) {
-    return (
-        <Button
-            sx={{
-                color,
-            }}
-            variant="contained"
-            className="flex justify-between items-center px-4 py-2 bg-blue-500 text-white rounded"
-            onClick={onClick}
-        >
-            <span>{primary}</span>
-            <span>{secondary}</span>
-        </Button>
-    );
-}
+
