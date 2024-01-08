@@ -5,7 +5,7 @@ import CustomButton from "./customResourceButton";
 type resourceProps = {
     state: IdleGameState;
     updateState: Dispatch<IdleGameReducerAction>;
-    resourceId: number
+    resourceId: number;
 };
 
 export default function Resource({
@@ -18,14 +18,15 @@ export default function Resource({
             type: "gatherResource",
             resourceId: resourceId,
         });
-    }
+    };
     const buyResource = () => {
         updateState({
             type: "buyResource",
             resourceId: resourceId,
         });
     };
-    const {baseCost, costMultiplier, count, name} = state.resources[resourceId];
+    const { baseCost, costMultiplier, count, name } =
+        state.resources[resourceId];
     return (
         <div className="flex flex-col w-1/4 pt-10">
             <CustomButton

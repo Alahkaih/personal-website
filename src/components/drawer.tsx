@@ -112,6 +112,6 @@ const list: listInput[] = [
     {
         name: "Games",
         icon: <Code />,
-        urlOverride: "games/combined"
-    }
+        urlOverride: "games/combined",
+    },
 ];
