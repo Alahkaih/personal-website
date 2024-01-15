@@ -1,4 +1,4 @@
-import { ValidWorkerIds } from "@/app/games/combined/combinedGamePageReducer";
+import { getWorkerLabel } from "@/app/games/combined/combinedGamePageReducer";
 import { FormControl, Select, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 
@@ -8,27 +8,27 @@ type SimpleDropdownProps = {
         label: string;
     }[];
     onSelect: (target: string, oldTarget?: string) => void;
+    value: string;
 };
 
-export default function SimpleDropdown({
-    options,
-    onSelect,
-}: SimpleDropdownProps) {
-    const [selected, setSelected] = useState<string>("-1");
-    const [oldSelected, setOldSelected] = useState<string>();
+export default function SimpleDropdown({ options, onSelect, value }: SimpleDropdownProps) {
+    const [oldSelectedId, setOldSelectedId] = useState<string>(value);
+    const [oldSelectedLabel, setOldSelectedLabel] = useState<string>(getWorkerLabel(Number(value)));
 
-    // const handleSelect = (target: string, oldTarget?: string) => {
-    //     setSelected(target)
-    //     onSelect(target, oldTarget)
-    // }
-
-    useEffect(() => {
-        onSelect(selected, oldSelected);
-        setOldSelected(selected);
-    }, [selected]);
+    const handleSelect = (target: string, oldTarget?: string) => {
+        setOldSelectedId(target)
+        setOldSelectedLabel(getWorkerLabel(Number(target)))
+        onSelect(target, oldTarget)
+    }
 
     const getOptions = () => {
-        return options.map((option, index) => (
+        const currentOption = {label: oldSelectedLabel, id: oldSelectedId}
+        let totalOptions = options
+        if(oldSelectedId !== "-1" && !totalOptions.find((option) => option.id === oldSelectedId)) {
+            totalOptions = [...totalOptions, currentOption]
+            totalOptions.sort((a, b) => Number(a.id) - Number(b.id))
+        }
+        return totalOptions.map((option, index) => (
             <MenuItem key={index} value={option.id}>
                 {option.label}
             </MenuItem>
@@ -38,9 +38,8 @@ export default function SimpleDropdown({
         <div>
             <FormControl fullWidth>
                 <Select
-                    value={selected}
-                    defaultValue={"-1"}
-                    onChange={(event) => setSelected(event.target.value)}
+                    value={value ?? "-1"}
+                    onChange={(event) => handleSelect(event.target.value, oldSelectedId)}
                     displayEmpty
                     inputProps={{ "aria-label": "Without label" }}
                 >
@@ -51,3 +50,4 @@ export default function SimpleDropdown({
         </div>
     );
 }
+

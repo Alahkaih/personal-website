@@ -1,11 +1,7 @@
 "use client";
 import { Button } from "@mui/material";
 import { Dispatch, useEffect, useReducer, useState } from "react";
-import {
-    IdleGameReducerAction,
-    IdleGameState,
-    idleGameReducer,
-} from "./reducer";
+import { IdleGameReducerAction, IdleGameState, idleGameReducer } from "./reducer";
 import CustomButton from "@/components/idleGame/customResourceButton";
 import Resource from "@/components/idleGame/resource";
 
@@ -38,14 +34,7 @@ export default function Idle() {
 
     const getResourceComponents = (resources: typeof state.resources) => {
         return Object.keys(resources).map((key) => {
-            return (
-                <Resource
-                    key={key}
-                    state={state}
-                    updateState={dispatch}
-                    resourceId={Number(key)}
-                />
-            );
+            return <Resource key={key} state={state} updateState={dispatch} resourceId={Number(key)} />;
         });
     };
     return (

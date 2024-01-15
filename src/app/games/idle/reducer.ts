@@ -19,11 +19,7 @@ type updateAllResource = {
     type: "updateAllResources";
 };
 
-export type IdleGameReducerAction =
-    | UpdateResourceAction
-    | BuyResourceAction
-    | CreateResourceAction
-    | updateAllResource;
+export type IdleGameReducerAction = UpdateResourceAction | BuyResourceAction | CreateResourceAction | updateAllResource;
 
 export type IdleGameState = {
     gold: number;
@@ -37,10 +33,7 @@ export type IdleGameState = {
     };
 };
 
-export const idleGameReducer = (
-    state: IdleGameState,
-    action: IdleGameReducerAction,
-) => {
+export const idleGameReducer = (state: IdleGameState, action: IdleGameReducerAction) => {
     switch (action.type) {
         case "gatherResource":
             console.log("gathering resource");
@@ -51,8 +44,7 @@ export const idleGameReducer = (
                 };
             }
             const resourceToBeUpdated = state.resources[action.resourceId - 1];
-            resourceToBeUpdated.count +=
-                state.resources[action.resourceId].count;
+            resourceToBeUpdated.count += state.resources[action.resourceId].count;
             return {
                 ...state,
                 resources: {
@@ -63,8 +55,7 @@ export const idleGameReducer = (
         case "buyResource":
             console.log("buying resource");
             const goldCost =
-                state.resources[action.resourceId].costMultiplier *
-                    state.resources[action.resourceId].count +
+                state.resources[action.resourceId].costMultiplier * state.resources[action.resourceId].count +
                 state.resources[action.resourceId].baseCost;
             if (goldCost > state.gold) {
                 return state;
@@ -95,19 +86,14 @@ export const idleGameReducer = (
             };
         case "updateAllResources":
             console.log("updating all resources");
-            const newResources = Object.entries(state.resources).map(
-                (entry) => {
-                    const [key, resource] = entry;
-                    const newCount = state.resources[Number(key) + 1]?.count
-                        ? resource.count +
-                          state.resources[Number(key) + 1]?.count
-                        : resource.count;
-                    return {
-                        ...resource,
-                        count: newCount,
-                    };
-                },
-            );
+            const newResources = Object.entries(state.resources).map((entry) => {
+                const [key, resource] = entry;
+                const newCount = state.resources[Number(key) + 1]?.count ? resource.count + state.resources[Number(key) + 1]?.count : resource.count;
+                return {
+                    ...resource,
+                    count: newCount,
+                };
+            });
 
             return {
                 gold: state.gold + state.resources[0].count,

@@ -6,12 +6,7 @@ type customButtonProps = {
     color: string;
     onClick: () => void;
 };
-export default function CustomButton({
-    primary,
-    secondary,
-    color,
-    onClick,
-}: customButtonProps) {
+export default function CustomButton({ primary, secondary, color, onClick }: customButtonProps) {
     return (
         <Button
             sx={{

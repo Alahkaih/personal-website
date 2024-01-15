@@ -1,22 +1,7 @@
 "use client";
 
-import {
-    Button,
-    Drawer,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-} from "@mui/material";
-import {
-    Home,
-    Menu,
-    Info,
-    Code,
-    Email,
-    Description,
-} from "@mui/icons-material";
+import { Button, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import { Home, Menu, Info, Code, Email, Description } from "@mui/icons-material";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
@@ -37,11 +22,7 @@ export default function HomeDrawer() {
             </div>
 
             <div>
-                <Drawer
-                    open={open}
-                    anchor="left"
-                    onClose={() => setOpen(false)}
-                >
+                <Drawer open={open} anchor="left" onClose={() => setOpen(false)}>
                     <Button
                         onClick={() => setOpen(false)}
                         sx={{
@@ -60,16 +41,9 @@ export default function HomeDrawer() {
 const getList = (listInputs: listInput[], router: AppRouterInstance) => {
     const lists = listInputs.map((listInput, index) => {
         return (
-            <Link
-                href={`/${
-                    listInput.urlOverride ?? listInput.name.toLowerCase()
-                }`}
-                key={index}
-            >
+            <Link href={`/${listInput.urlOverride ?? listInput.name.toLowerCase()}`} key={index}>
                 <ListItem disablePadding>
-                    <ListItemButton
-                        onClick={() => router.push(`/${listInput.name}`)}
-                    >
+                    <ListItemButton onClick={() => router.push(`/${listInput.name}`)}>
                         <ListItemIcon>{listInput.icon}</ListItemIcon>
                         <ListItemText primary={listInput.name} />
                     </ListItemButton>

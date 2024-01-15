@@ -13,10 +13,7 @@ type ResourceCollectionProps = {
     state: CombinedGameState;
 };
 
-export default function ResourceCollection({
-    dispatch,
-    state,
-}: ResourceCollectionProps) {
+export default function ResourceCollection({ dispatch, state }: ResourceCollectionProps) {
     useEffect(() => {
         const interval = setInterval(
             () =>
@@ -27,13 +24,15 @@ export default function ResourceCollection({
         );
 
         return () => clearInterval(interval);
-    }, []);
+    }, [dispatch]);
 
     const getOptions = () => {
         return Object.entries(state.resourceCollection.workerCollection)
             .map((entry) => {
                 const [workerId, workerCount] = entry;
+                const numberOfActiveWorkers = state.resourceCollection.activeWorkerMap[Number(workerId)]
                 if (workerCount === 0) return;
+                if(numberOfActiveWorkers && workerCount - numberOfActiveWorkers <= 0) return
                 const worker = getWorkerFromId(Number(workerId));
                 return {
                     id: workerId,
@@ -46,12 +45,14 @@ export default function ResourceCollection({
         }[];
     };
 
-    const handleSelect = (workerId: string, oldWorkerId?: string) => {
+    const handleSelect = (workerIndex: number, workerId: string, oldWorkerId?: string) => {
+        console.log(state);
         if (workerId === "" || Number.isNaN(Number(workerId))) return;
         if (workerId === "-1") {
             dispatch({
                 type: "removeActiveWorker",
                 workerBeingRemoved: Number(oldWorkerId),
+                workerIndex
             });
             return;
         }
@@ -59,11 +60,34 @@ export default function ResourceCollection({
             type: "addActiveWorker",
             activeWorker: Number(workerId),
             workerBeingRemoved: Number(oldWorkerId),
+            workerIndex
         });
+    };
+
+    const generateHandleSelect = (workerIndex: number) => {
+        return (workerId: string, oldWorkerId?: string) => {
+            handleSelect(workerIndex, workerId, oldWorkerId);
+        };
+    }
+
+    const getDropDowns = () => {
+        const dropdowns = [];
+        for (let i = 0; i < state.resourceCollection.activeWorkerLimit; i++) {
+            dropdowns.push(
+                <SimpleDropdown
+                    key={i}
+                    options={getOptions()}
+                    onSelect={generateHandleSelect(i)}
+                    value={state.resourceCollection.activeWorkerList[i].toString()}
+                />,
+            );
+        }
+        return dropdowns;
     };
     return (
         <div>
-            <SimpleDropdown options={getOptions()} onSelect={handleSelect} />
+            {/* <SimpleDropdown options={getOptions()} onSelect={handleSelect} value={Object.keys(state.resourceCollection.activeWorkers)[0]} /> */}
+            {getDropDowns()}
         </div>
     );
 }

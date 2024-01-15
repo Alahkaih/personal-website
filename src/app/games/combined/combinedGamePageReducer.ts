@@ -4,19 +4,18 @@ type collectFromAllWorkers = {
 
 type addActiveWorker = {
     type: "addActiveWorker";
+    workerIndex: number
     activeWorker: number;
     workerBeingRemoved?: number;
 };
 
 type removeActiveWorker = {
     type: "removeActiveWorker";
+    workerIndex: number
     workerBeingRemoved: number;
 };
 
-export type CombinedGameReducerAction =
-    | collectFromAllWorkers
-    | addActiveWorker
-    | removeActiveWorker;
+export type CombinedGameReducerAction = collectFromAllWorkers | addActiveWorker | removeActiveWorker;
 
 export type CombinedGameState = {
     resources: {
@@ -25,89 +24,70 @@ export type CombinedGameState = {
         diamond: number;
     };
     resourceCollection: {
-        activeWorkers: Record<number, number | undefined>;
-        workerCollection: Record<number, number | undefined>;
+        activeWorkerMap: Record<number, number | undefined>;
+        activeWorkerList: number[];
+        resourceRateMap: Record<WorkerTypes, number>;
+        workerCollection: Record<number, number>;
+        activeWorkerLimit: number
     };
 };
 
-const objectKeys = <T extends object>(obj: T) =>
-    Object.keys(obj) as (keyof T)[];
+const objectKeys = <T extends object>(obj: T) => Object.keys(obj) as (keyof T)[];
 
-export const combinedGameReducer = (
-    state: CombinedGameState,
-    action: CombinedGameReducerAction,
-) => {
+export const combinedGameReducer = (state: CombinedGameState, action: CombinedGameReducerAction) => {
     switch (action.type) {
         case "collectFromAllWorkers":
             // console.log("collecting from all workers", state)
-            objectKeys(state.resourceCollection.activeWorkers).forEach(
-                (worker) => {
-                    // console.log("adding ", getWorkerFromId(worker).level, "to ", getWorkerFromId(worker).workerType, " it is ", getWorkerFromId(worker))
-                    const count = state.resourceCollection.activeWorkers[
-                        worker
-                    ] as number;
-                    state.resources[getWorkerFromId(worker).workerType] +=
-                        getWorkerFromId(worker).level * count;
-                },
-            );
+            objectKeys(state.resourceCollection.activeWorkerMap).forEach((worker) => {
+                // console.log("adding ", getWorkerFromId(worker).level, "to ", getWorkerFromId(worker).workerType, " it is ", getWorkerFromId(worker))
+                const count = state.resourceCollection.activeWorkerMap[worker] as number;
+                const {workerType, level} = getWorkerFromId(worker)
+                state.resources[workerType] += level * count;
+            });
             return { ...state };
         case "addActiveWorker":
-            console.log(
-                "adding ",
-                action.activeWorker,
-                " removing ",
-                action.workerBeingRemoved,
-            );
-            let workerCount =
-                state.resourceCollection.activeWorkers[action.activeWorker];
+            console.log("adding ", action.activeWorker, " removing ", action.workerBeingRemoved);
+            let workerCount = state.resourceCollection.activeWorkerMap[action.activeWorker];
             if (!workerCount) {
                 workerCount = 1;
             } else {
                 workerCount += 1;
             }
+            const {workerType: addedWorkerType, level: addedLevel} = getWorkerFromId(action.activeWorker)
 
-            state.resourceCollection.activeWorkers[action.activeWorker] =
-                workerCount;
+            state.resourceCollection.resourceRateMap[addedWorkerType] += addedLevel
+            state.resourceCollection.activeWorkerMap[action.activeWorker] = workerCount;
+            state.resourceCollection.activeWorkerList[action.workerIndex] = action.activeWorker;
 
-            if (action.workerBeingRemoved) {
-                workerCount =
-                    state.resourceCollection.activeWorkers[
-                        action.workerBeingRemoved
-                    ];
-                if (!workerCount) {
-                    delete state.resourceCollection.activeWorkers[
-                        action.workerBeingRemoved
-                    ];
-                } else {
+            if (action.workerBeingRemoved !== undefined && action.workerBeingRemoved !== -1) {
+                workerCount = state.resourceCollection.activeWorkerMap[action.workerBeingRemoved];
+                if (workerCount) {
                     workerCount -= 1;
-                    state.resourceCollection.activeWorkers[
-                        action.workerBeingRemoved
-                    ] = workerCount;
+                    if(workerCount === 0) {
+                        delete state.resourceCollection.activeWorkerMap[action.workerBeingRemoved];
+                    } else {
+                        state.resourceCollection.activeWorkerMap[action.workerBeingRemoved] = workerCount;
+                    }
                 }
+                const {workerType: removedWorkerType, level: removedLevel} = getWorkerFromId(action.workerBeingRemoved)
+                state.resourceCollection.resourceRateMap[removedWorkerType] -= removedLevel
             }
             return { ...state };
         case "removeActiveWorker":
             console.log("removing ", action.workerBeingRemoved, state);
 
-            let workerCount2 =
-                state.resourceCollection.activeWorkers[
-                    action.workerBeingRemoved
-                ];
-            if (!workerCount2) {
-                delete state.resourceCollection.activeWorkers[
-                    action.workerBeingRemoved
-                ];
-            } else {
+            let workerCount2 = state.resourceCollection.activeWorkerMap[action.workerBeingRemoved];
+            if (workerCount2) {
+                delete state.resourceCollection.activeWorkerMap[action.workerBeingRemoved];
                 workerCount2 -= 1;
-                state.resourceCollection.activeWorkers[
-                    action.workerBeingRemoved
-                ] = workerCount2;
+                state.resourceCollection.activeWorkerMap[action.workerBeingRemoved] = workerCount2;
                 if (workerCount2 === 0) {
-                    delete state.resourceCollection.activeWorkers[
-                        action.workerBeingRemoved
-                    ];
+                    delete state.resourceCollection.activeWorkerMap[action.workerBeingRemoved];
                 }
             }
+            const {workerType: removedWorkerType, level: removedLevel} = getWorkerFromId(action.workerBeingRemoved)
+            state.resourceCollection.resourceRateMap[removedWorkerType] -= removedLevel
+            state.resourceCollection.activeWorkerList[action.workerIndex] = -1
             return { ...state };
         default:
             return state;
@@ -145,24 +125,15 @@ export const workerTypes = {
     },
 } as const;
 
-type Enumerate<
-    N extends number,
-    Acc extends number[] = [],
-> = Acc["length"] extends N
-    ? Acc[number]
-    : Enumerate<N, [...Acc, Acc["length"]]>;
+type Enumerate<N extends number, Acc extends number[] = []> = Acc["length"] extends N ? Acc[number] : Enumerate<N, [...Acc, Acc["length"]]>;
 
-type IntRange<F extends number, T extends number> = Exclude<
-    Enumerate<T>,
-    Enumerate<F>
->;
+type IntRange<F extends number, T extends number> = Exclude<Enumerate<T>, Enumerate<F>>;
 
-const typeSafeModulo = <y extends number>(x: number, y: y) =>
-    (x % y) as IntRange<0, y>;
+const typeSafeModulo = <y extends number>(x: number, y: y) => (x % y) as IntRange<0, y>;
 
-export const getWorkerFromId = (
-    id: number,
-): { level: number; workerType: "iron" | "gold" | "diamond" } => {
+type WorkerTypes  = "iron" | "gold" | "diamond"
+
+export const getWorkerFromId = (id: number): { level: number; workerType: WorkerTypes} => {
     const level = Math.floor(id / 3) + 1;
     switch (typeSafeModulo(id, 3)) {
         case 0:
@@ -183,6 +154,14 @@ export const getWorkerFromId = (
     }
 };
 
+export const getWorkerLabel = (id: number) => {
+    if(id === -1) {
+        return "None"
+    }
+    const {level, workerType} = getWorkerFromId(id);
+    return `${workerType} ${level}`
+}
+
 workerTypes satisfies {
     [key: number]: {
         workerType: "iron" | "gold" | "diamond";
@@ -192,6 +171,8 @@ workerTypes satisfies {
 
 export type ValidWorkerIds = keyof typeof workerTypes;
 
+const baseWorkerLimit = 2
+
 export const initialState: CombinedGameState = {
     resources: {
         iron: 0,
@@ -199,7 +180,14 @@ export const initialState: CombinedGameState = {
         diamond: 0,
     },
     resourceCollection: {
-        activeWorkers: {},
-        workerCollection: { "0": 1, "4": 1, "5": 1 },
+        activeWorkerMap: {},
+        activeWorkerLimit: baseWorkerLimit,
+        activeWorkerList: Array(baseWorkerLimit).fill("-1"),
+        resourceRateMap: {
+            iron: 0,
+            gold: 0,
+            diamond: 0,
+        },
+        workerCollection: { "0": 3, "4": 1, "5": 1, "7": 0 },
     },
 };
