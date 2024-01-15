@@ -40,9 +40,11 @@ export default function Combined() {
                 </div>
                 <div className="w-full px-2 mb-4">
                     <div className="bg-white p-5 rounded-lg shadow">
-                        <h2 className="text-xl font-semibold mb-4">{JSON.stringify(state.resourceCollection.activeWorkerList)}</h2>
-                        <h2 className="text-xl font-semibold mb-4">{JSON.stringify(state.resourceCollection.activeWorkerMap)}</h2>
-                        <h2 className="text-xl font-semibold mb-4">{JSON.stringify(state.resourceCollection.resourceRateMap)}</h2>
+                    <h1 className="text-xl font-semibold mb-4">DEBUG</h1>
+                        <h2 className="text-xl font-semibold mb-4">{JSON.stringify(state.resourceCollection.activeWorkerList) + ": active worker list"}</h2>
+                        <h2 className="text-xl font-semibold mb-4">{JSON.stringify(state.resourceCollection.activeWorkerMap) + ": active worker map"}</h2>
+                        <h2 className="text-xl font-semibold mb-4">{JSON.stringify(state.resourceCollection.resourceRateMap) + ": resource rate map"}</h2>
+                        <h2 className="text-xl font-semibold mb-4">{JSON.stringify(state.resourceCollection.workerCollection) + ": worker collection"}</h2>
                     </div>
                 </div>
             </div>
