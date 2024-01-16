@@ -4,6 +4,7 @@ import ResourceCollection from "@/components/combinedGames/resourceCollection";
 import { ReactNode, useReducer } from "react";
 import { combinedGameReducer, initialState } from "./combinedGamePageReducer";
 import ResourceHeader from "@/components/combinedGames/resourceHeader";
+import Inventory from "@/components/combinedGames/inventory";
 
 export default function Combined() {
     //TODO FIX BUG WHERE STATE IS PARTIALLY CARRIED OVER BETWEEN REDIRECTS
@@ -35,7 +36,8 @@ export default function Combined() {
 
                 <div className="w-full lg:w-1/3 px-2 mb-4">
                     <div className="bg-white p-5 rounded-lg shadow">
-                        <h2 className="text-xl font-semibold mb-4">Temp 2</h2>
+                        <h2 className="text-xl font-semibold mb-4">Inventory</h2>
+                        <Inventory state={state} dispatch={dispatch}/>
                     </div>
                 </div>
                 <div className="w-full px-2 mb-4">
