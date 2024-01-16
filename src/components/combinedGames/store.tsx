@@ -21,7 +21,7 @@ export default function Store({ dispatch, state }: StoreProps) {
                 dispatch({ type: "buyNewWorker", workerIndex: Number(workerId), cost })
             }
             return (
-                <div className="m-5" onClick={buyWorker}>
+                <div className="m-5" onClick={buyWorker} key={workerId}>
                     <Button  variant="outlined" color="primary" className={`w-full flex justify-between ${readyToBuy} bg-green-200`} key={workerId}>
                         <div>
                             {workerType} {level}
