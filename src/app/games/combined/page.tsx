@@ -8,9 +8,6 @@ import Inventory from "@/components/combinedGames/inventory"
 import Store from "@/components/combinedGames/store"
 
 export default function Combined() {
-    //TODO FIX BUG WHERE STATE IS PARTIALLY CARRIED OVER BETWEEN REDIRECTS
-    //Specifically the selected worker is not being removed/carried over properly
-    //Recreate by selecting a different worker and then going to home, and then coming back
     const [state, dispatch] = useReducer(combinedGameReducer, initialState)
     return (
         <div className="container mx-auto p-6">
