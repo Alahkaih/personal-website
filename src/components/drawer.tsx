@@ -1,14 +1,14 @@
-"use client";
+"use client"
 
-import { Button, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
-import { Home, Menu, Info, Code, Email, Description } from "@mui/icons-material";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import Link from "next/link";
+import { Button, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
+import { Home, Menu, Info, Code, Email, Description } from "@mui/icons-material"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime"
+import Link from "next/link"
 export default function HomeDrawer() {
-    const [open, setOpen] = useState(false);
-    const router = useRouter();
+    const [open, setOpen] = useState(false)
+    const router = useRouter()
     return (
         <div>
             <div className="fixed top-0 left-0">
@@ -35,7 +35,7 @@ export default function HomeDrawer() {
                 </Drawer>
             </div>
         </div>
-    );
+    )
 }
 
 const getList = (listInputs: listInput[], router: AppRouterInstance) => {
@@ -49,17 +49,17 @@ const getList = (listInputs: listInput[], router: AppRouterInstance) => {
                     </ListItemButton>
                 </ListItem>
             </Link>
-        );
-    });
+        )
+    })
 
-    return <List>{lists}</List>;
-};
+    return <List>{lists}</List>
+}
 
 type listInput = {
-    name: string;
-    icon: JSX.Element;
-    urlOverride?: string;
-};
+    name: string
+    icon: JSX.Element
+    urlOverride?: string
+}
 
 const list: listInput[] = [
     {
@@ -88,4 +88,4 @@ const list: listInput[] = [
         icon: <Code />,
         urlOverride: "games/combined",
     },
-];
+]

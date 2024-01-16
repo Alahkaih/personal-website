@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "next/image"
 export default function Home() {
     return (
         <div className="flex h-screen w-screen items-center justify-center">
@@ -10,5 +10,5 @@ export default function Home() {
             </p>
             <Image src={"/funnyRaccoon.jpg"} alt="Raccoon" width={500} height={500} />
         </div>
-    );
+    )
 }

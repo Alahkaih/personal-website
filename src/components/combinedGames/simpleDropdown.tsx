@@ -1,19 +1,19 @@
-import { getWorkerLabel } from "@/app/games/combined/combinedGamePageReducer";
-import { FormControl, Select, MenuItem } from "@mui/material";
-import { useEffect, useState } from "react";
+import { getWorkerLabel } from "@/app/games/combined/combinedGamePageReducer"
+import { FormControl, Select, MenuItem } from "@mui/material"
+import { useEffect, useState } from "react"
 
 type SimpleDropdownProps = {
     options: {
-        id: string;
-        label: string;
-    }[];
-    onSelect: (target: string, oldTarget?: string) => void;
-    value: string;
-};
+        id: string
+        label: string
+    }[]
+    onSelect: (target: string, oldTarget?: string) => void
+    value: string
+}
 
 export default function SimpleDropdown({ options, onSelect, value }: SimpleDropdownProps) {
-    const [oldSelectedId, setOldSelectedId] = useState<string>(value);
-    const [oldSelectedLabel, setOldSelectedLabel] = useState<string>(getWorkerLabel(Number(value)));
+    const [oldSelectedId, setOldSelectedId] = useState<string>(value)
+    const [oldSelectedLabel, setOldSelectedLabel] = useState<string>(getWorkerLabel(Number(value)))
 
     const handleSelect = (target: string, oldTarget?: string) => {
         setOldSelectedId(target)
@@ -22,9 +22,9 @@ export default function SimpleDropdown({ options, onSelect, value }: SimpleDropd
     }
 
     const getOptions = () => {
-        const currentOption = {label: oldSelectedLabel, id: oldSelectedId}
+        const currentOption = { label: oldSelectedLabel, id: oldSelectedId }
         let totalOptions = options
-        if(oldSelectedId !== "-1" && !totalOptions.find((option) => option.id === oldSelectedId)) {
+        if (oldSelectedId !== "-1" && !totalOptions.find((option) => option.id === oldSelectedId)) {
             totalOptions = [...totalOptions, currentOption]
             totalOptions.sort((a, b) => Number(a.id) - Number(b.id))
         }
@@ -32,8 +32,8 @@ export default function SimpleDropdown({ options, onSelect, value }: SimpleDropd
             <MenuItem key={index} value={option.id}>
                 {option.label}
             </MenuItem>
-        ));
-    };
+        ))
+    }
     return (
         <div>
             <FormControl fullWidth>
@@ -48,6 +48,5 @@ export default function SimpleDropdown({ options, onSelect, value }: SimpleDropd
                 </Select>
             </FormControl>
         </div>
-    );
+    )
 }
-

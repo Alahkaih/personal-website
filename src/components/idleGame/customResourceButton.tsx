@@ -1,11 +1,11 @@
-import { Button } from "@mui/material";
+import { Button } from "@mui/material"
 
 type customButtonProps = {
-    primary: string;
-    secondary: string | number;
-    color: string;
-    onClick: () => void;
-};
+    primary: string
+    secondary: string | number
+    color: string
+    onClick: () => void
+}
 export default function CustomButton({ primary, secondary, color, onClick }: customButtonProps) {
     return (
         <Button
@@ -19,5 +19,5 @@ export default function CustomButton({ primary, secondary, color, onClick }: cus
             <span>{primary}</span>
             <span>{secondary}</span>
         </Button>
-    );
+    )
 }

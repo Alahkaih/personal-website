@@ -1,12 +1,12 @@
-"use client";
-import { Button } from "@mui/material";
-import { Dispatch, useEffect, useReducer, useState } from "react";
-import { IdleGameReducerAction, IdleGameState, idleGameReducer } from "./reducer";
-import CustomButton from "@/components/idleGame/customResourceButton";
-import Resource from "@/components/idleGame/resource";
+"use client"
+import { Button } from "@mui/material"
+import { Dispatch, useEffect, useReducer, useState } from "react"
+import { IdleGameReducerAction, IdleGameState, idleGameReducer } from "./reducer"
+import CustomButton from "@/components/idleGame/customResourceButton"
+import Resource from "@/components/idleGame/resource"
 
 export default function Idle() {
-    const resources = ["Iron", "Worker", "Mine"];
+    const resources = ["Iron", "Worker", "Mine"]
 
     useEffect(() => {
         const interval = setInterval(
@@ -15,10 +15,10 @@ export default function Idle() {
                     type: "updateAllResources",
                 }),
             1000,
-        );
+        )
 
-        return () => clearInterval(interval);
-    }, []);
+        return () => clearInterval(interval)
+    }, [])
 
     const [state, dispatch] = useReducer(idleGameReducer, {
         gold: 0,
@@ -30,13 +30,13 @@ export default function Idle() {
                 baseCost: 10,
             },
         },
-    });
+    })
 
     const getResourceComponents = (resources: typeof state.resources) => {
         return Object.keys(resources).map((key) => {
-            return <Resource key={key} state={state} updateState={dispatch} resourceId={Number(key)} />;
-        });
-    };
+            return <Resource key={key} state={state} updateState={dispatch} resourceId={Number(key)} />
+        })
+    }
     return (
         <div className="flex flex-col items-center">
             <div className="p-12">
@@ -54,7 +54,7 @@ export default function Idle() {
                             resourceName: "Resource",
                             baseCost: 100,
                             costMultiplier: 1,
-                        });
+                        })
                     }}
                 />
                 <CustomButton
@@ -64,10 +64,10 @@ export default function Idle() {
                     onClick={() => {
                         dispatch({
                             type: "updateAllResources",
-                        });
+                        })
                     }}
                 />
             </div>
         </div>
-    );
+    )
 }

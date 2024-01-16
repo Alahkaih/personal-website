@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import { Button } from "@mui/material";
+import { Button } from "@mui/material"
 export default function Buttons() {
     const getButtons = (buttons: string[]) => {
         return buttons.map((button, index) => (
@@ -9,10 +9,10 @@ export default function Buttons() {
                     {button}
                 </Button>
             </div>
-        ));
-    };
+        ))
+    }
 
-    const buttons = ["projects", "Contact", "Resume", "About"];
+    const buttons = ["projects", "Contact", "Resume", "About"]
     return (
         // <div className="flex flex-wrap justify-center">
         //     {getButtons(buttons)}
@@ -20,5 +20,5 @@ export default function Buttons() {
         <div className="flex justify-center py-28">
             <div className="flex flex-wrap w-3/4">{getButtons(buttons)}</div>
         </div>
-    );
+    )
 }

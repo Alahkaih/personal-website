@@ -4,14 +4,14 @@ import {
     ValidWorkerIds,
     getWorkerFromId,
     workerTypes,
-} from "@/app/games/combined/combinedGamePageReducer";
-import { Dispatch, useEffect } from "react";
-import SimpleDropdown from "./simpleDropdown";
+} from "@/app/games/combined/combinedGamePageReducer"
+import { Dispatch, useEffect } from "react"
+import SimpleDropdown from "./simpleDropdown"
 //TODO: add reducer with resources and selected workers
 type ResourceCollectionProps = {
-    dispatch: Dispatch<CombinedGameReducerAction>;
-    state: CombinedGameState;
-};
+    dispatch: Dispatch<CombinedGameReducerAction>
+    state: CombinedGameState
+}
 
 export default function ResourceCollection({ dispatch, state }: ResourceCollectionProps) {
     useEffect(() => {
@@ -21,57 +21,57 @@ export default function ResourceCollection({ dispatch, state }: ResourceCollecti
                     type: "collectFromAllWorkers",
                 }),
             1000,
-        );
+        )
 
-        return () => clearInterval(interval);
-    }, [dispatch]);
+        return () => clearInterval(interval)
+    }, [dispatch])
 
     const getOptions = () => {
         return Object.entries(state.resourceCollection.workerCollection)
             .map((entry) => {
-                const [workerId, workerCount] = entry;
+                const [workerId, workerCount] = entry
                 const numberOfActiveWorkers = state.resourceCollection.activeWorkerMap[Number(workerId)]
-                if (workerCount === 0) return;
-                if(numberOfActiveWorkers && workerCount - numberOfActiveWorkers <= 0) return
-                const worker = getWorkerFromId(Number(workerId));
+                if (workerCount === 0) return
+                if (numberOfActiveWorkers && workerCount - numberOfActiveWorkers <= 0) return
+                const worker = getWorkerFromId(Number(workerId))
                 return {
                     id: workerId,
                     label: `${worker.workerType} ${worker.level}`,
-                };
+                }
             })
             .filter((option) => option) as {
-            id: ValidWorkerIds;
-            label: string;
-        }[];
-    };
+            id: ValidWorkerIds
+            label: string
+        }[]
+    }
 
     const handleSelect = (workerIndex: number, workerId: string, oldWorkerId?: string) => {
-        console.log(state);
-        if (workerId === "" || Number.isNaN(Number(workerId))) return;
+        console.log(state)
+        if (workerId === "" || Number.isNaN(Number(workerId))) return
         if (workerId === "-1") {
             dispatch({
                 type: "removeActiveWorker",
                 workerBeingRemoved: Number(oldWorkerId),
-                workerIndex
-            });
-            return;
+                workerIndex,
+            })
+            return
         }
         dispatch({
             type: "addActiveWorker",
             activeWorker: Number(workerId),
             workerBeingRemoved: Number(oldWorkerId),
-            workerIndex
-        });
-    };
+            workerIndex,
+        })
+    }
 
     const generateHandleSelect = (workerIndex: number) => {
         return (workerId: string, oldWorkerId?: string) => {
-            handleSelect(workerIndex, workerId, oldWorkerId);
-        };
+            handleSelect(workerIndex, workerId, oldWorkerId)
+        }
     }
 
     const getDropDowns = () => {
-        const dropdowns = [];
+        const dropdowns = []
         for (let i = 0; i < state.resourceCollection.activeWorkerLimit; i++) {
             dropdowns.push(
                 <SimpleDropdown
@@ -80,14 +80,14 @@ export default function ResourceCollection({ dispatch, state }: ResourceCollecti
                     onSelect={generateHandleSelect(i)}
                     value={state.resourceCollection.activeWorkerList[i].toString()}
                 />,
-            );
+            )
         }
-        return dropdowns;
-    };
+        return dropdowns
+    }
     return (
         <div>
             {/* <SimpleDropdown options={getOptions()} onSelect={handleSelect} value={Object.keys(state.resourceCollection.activeWorkers)[0]} /> */}
             {getDropDowns()}
         </div>
-    );
+    )
 }
