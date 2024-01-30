@@ -22,7 +22,7 @@ export default function Store({ dispatch, state }: StoreProps) {
             }
             return (
                 <div className="m-5" onClick={buyWorker} key={workerId}>
-                    <Button  variant="outlined" color="primary" className={`w-full flex justify-between ${readyToBuy} bg-green-200`} key={workerId}>
+                    <Button variant="outlined" color="primary" className={`w-full flex justify-between ${readyToBuy}`} key={workerId}>
                         <div>
                             {workerType} {level}
                         </div>{" "}

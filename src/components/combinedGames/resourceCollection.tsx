@@ -1,13 +1,7 @@
-import {
-    CombinedGameReducerAction,
-    CombinedGameState,
-    ValidWorkerIds,
-    getWorkerFromId,
-    workerTypes,
-} from "@/app/games/combined/combinedGamePageReducer"
+import { CombinedGameReducerAction, CombinedGameState, ValidWorkerIds, getWorkerFromId } from "@/app/games/combined/combinedGamePageReducer"
 import { Dispatch, useEffect } from "react"
 import SimpleDropdown from "./simpleDropdown"
-//TODO: add reducer with resources and selected workers
+
 type ResourceCollectionProps = {
     dispatch: Dispatch<CombinedGameReducerAction>
     state: CombinedGameState

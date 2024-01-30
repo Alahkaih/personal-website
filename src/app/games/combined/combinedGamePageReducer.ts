@@ -24,7 +24,12 @@ type BuyNewWorker = {
     cost: StoreItem["cost"]
 }
 
-export type CombinedGameReducerAction = collectFromAllWorkers | addActiveWorker | removeActiveWorker | BuyNewWorker
+type combineWorkers = {
+    type: "combineWorkers"
+    workerIndex: number
+}
+
+export type CombinedGameReducerAction = collectFromAllWorkers | addActiveWorker | removeActiveWorker | BuyNewWorker | combineWorkers
 
 export type CombinedGameState = {
     resources: {
@@ -96,18 +101,25 @@ export const combinedGameReducer = (state: CombinedGameState, action: CombinedGa
             state.resourceCollection.resourceRateMap[removedWorkerType] -= removedLevel
             state.resourceCollection.activeWorkerList[action.workerIndex] = -1
             return { ...state }
-        case "buyNewWorker": 
-        console.log("buying new worker", action)
+        case "buyNewWorker":
+            console.log("buying new worker", action)
             const canBuy = objectEntries(action.cost).every(([resource, amount]) => state.resources[resource] >= amount)
-            if(!canBuy) return state
+            if (!canBuy) return state
             objectKeys(state.resources).forEach((resource) => {
                 state.resources[resource] -= action.cost[resource]
             })
-            if(state.resourceCollection.workerCollection[action.workerIndex])
-                state.resourceCollection.workerCollection[action.workerIndex] += 1
-            else
-                state.resourceCollection.workerCollection[action.workerIndex] = 1
-            return {...state}
+            if (state.resourceCollection.workerCollection[action.workerIndex]) state.resourceCollection.workerCollection[action.workerIndex] += 1
+            else state.resourceCollection.workerCollection[action.workerIndex] = 1
+            return { ...state }
+
+        case "combineWorkers":
+            console.log("combining workers", action)
+            if (state.resourceCollection.workerCollection[action.workerIndex] < 3) return state
+            state.resourceCollection.workerCollection[action.workerIndex] -= 3
+            if (!state.resourceCollection.workerCollection[action.workerIndex + 3])
+                state.resourceCollection.workerCollection[action.workerIndex + 3] = 1
+            else state.resourceCollection.workerCollection[action.workerIndex + 3] += 1
+            return { ...state }
         default:
             return state
     }

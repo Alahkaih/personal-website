@@ -36,7 +36,7 @@ export default function Combined() {
                 <div className="w-full lg:w-1/3 px-2 mb-4">
                     <div className="bg-white p-5 rounded-lg shadow">
                         <h2 className="text-xl font-semibold mb-4">Inventory</h2>
-                        <Inventory state={state} />
+                        <Inventory state={state} dispatch={dispatch} />
                     </div>
                 </div>
                 <div className="w-full px-2 mb-4">
