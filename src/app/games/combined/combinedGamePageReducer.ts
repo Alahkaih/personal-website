@@ -35,7 +35,12 @@ type updateState = {
     newState: CombinedGameState
 }
 
-export type CombinedGameReducerAction = collectFromAllWorkers | addActiveWorker | removeActiveWorker | BuyNewWorker | combineWorkers | updateState
+type BuyNewResource = {
+    type: "buyNewResource",
+    cost: StoreItem["cost"]
+}
+
+export type CombinedGameReducerAction = collectFromAllWorkers | addActiveWorker | removeActiveWorker | BuyNewWorker | combineWorkers | updateState | BuyNewResource
 
 const preProcessNumber = z.preprocess((x) => Number(x), z.number())
 
@@ -125,7 +130,15 @@ export const combinedGameReducer = (state: CombinedGameState, action: CombinedGa
             if (state.resourceCollection.workerCollection[action.workerIndex]) state.resourceCollection.workerCollection[action.workerIndex] += 1
             else state.resourceCollection.workerCollection[action.workerIndex] = 1
             return { ...state }
-
+        case "buyNewResource":
+            const canBuyResource = objectEntries(action.cost).every(([resource, amount]) => state.resources[resource] >= amount)
+            if (!canBuyResource) return state
+            objectKeys(state.resources).forEach((resource) => {
+                state.resources[resource] -= action.cost[resource]
+            })
+            state.resourceCollection.activeWorkerLimit += 1
+            state.resourceCollection.activeWorkerList.push(-1)
+            return { ...state }
         case "combineWorkers":
             console.log("combining workers", action)
             if (state.resourceCollection.workerCollection[action.workerIndex] < 3) return state

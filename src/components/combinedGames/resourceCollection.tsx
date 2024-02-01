@@ -1,6 +1,7 @@
 import { CombinedGameReducerAction, CombinedGameState, ValidWorkerIds, getWorkerFromId } from "@/app/games/combined/combinedGamePageReducer"
 import { Dispatch, useEffect } from "react"
 import SimpleDropdown from "./simpleDropdown"
+import MoreResourceButton from "./moreResourceButton"
 
 type ResourceCollectionProps = {
     dispatch: Dispatch<CombinedGameReducerAction>
@@ -78,10 +79,14 @@ export default function ResourceCollection({ dispatch, state }: ResourceCollecti
         }
         return dropdowns
     }
+
     return (
         <div>
             {/* <SimpleDropdown options={getOptions()} onSelect={handleSelect} value={Object.keys(state.resourceCollection.activeWorkers)[0]} /> */}
             {getDropDowns()}
+            <div className="mt-3">
+                <MoreResourceButton state={state} dispatch={dispatch} />
+            </div>
         </div>
     )
 }
