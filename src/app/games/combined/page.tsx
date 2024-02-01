@@ -67,7 +67,7 @@ export default function Combined() {
                         <Inventory state={state} dispatch={dispatch} />
                     </div>
                 </div>
-                <div className="w-full px-2 mb-4">
+                {/* <div className="w-full px-2 mb-4">
                     <div className="bg-white p-5 rounded-lg shadow">
                         <h1 className="text-xl font-semibold mb-4">DEBUG</h1>
                         <h2 className="text-xl font-semibold mb-4">
@@ -83,7 +83,7 @@ export default function Combined() {
                             {JSON.stringify(state.resourceCollection.workerCollection) + ": worker collection"}
                         </h2>
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     )
