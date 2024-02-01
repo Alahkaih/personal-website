@@ -248,6 +248,6 @@ export const initialState: CombinedGameState = {
             gold: 0,
             diamond: 0,
         },
-        workerCollection: { "0": 2, "4": 1, "5": 1, "7": 0 },
+        workerCollection: { "0": 1 },
     },
 }
