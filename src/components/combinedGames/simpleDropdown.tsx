@@ -1,4 +1,4 @@
-import { getWorkerLabel } from "@/app/games/combined/combinedGamePageReducer"
+import { CombinedGameState, getWorkerLabel } from "@/app/games/combined/combinedGamePageReducer"
 import { FormControl, Select, MenuItem } from "@mui/material"
 import { useEffect, useState } from "react"
 
@@ -14,6 +14,12 @@ type SimpleDropdownProps = {
 export default function SimpleDropdown({ options, onSelect, value }: SimpleDropdownProps) {
     const [oldSelectedId, setOldSelectedId] = useState<string>(value)
     const [oldSelectedLabel, setOldSelectedLabel] = useState<string>(getWorkerLabel(Number(value)))
+
+    useEffect(() => {
+        setOldSelectedId(value)
+        setOldSelectedLabel(getWorkerLabel(Number(value)))
+    }, [value])
+
 
     const handleSelect = (target: string, oldTarget?: string) => {
         setOldSelectedId(target)
@@ -34,19 +40,19 @@ export default function SimpleDropdown({ options, onSelect, value }: SimpleDropd
             </MenuItem>
         ))
     }
-    return (
-        <div>
+        return (
+<div>
             <FormControl fullWidth>
-                <Select
-                    value={value ?? "-1"}
-                    onChange={(event) => handleSelect(event.target.value, oldSelectedId)}
-                    displayEmpty
-                    inputProps={{ "aria-label": "Without label" }}
-                >
-                    <MenuItem value="-1">None</MenuItem>
-                    {getOptions()}
-                </Select>
-            </FormControl>
+            <Select
+                value={value ?? "-1"}
+                onChange={(event) => handleSelect(event.target.value, oldSelectedId)}
+                displayEmpty
+                inputProps={{ "aria-label": "Without label" }}
+            >
+                <MenuItem value="-1">None</MenuItem>
+                {getOptions()}
+            </Select>
+                    </FormControl>
         </div>
     )
 }

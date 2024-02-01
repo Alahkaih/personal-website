@@ -1,5 +1,6 @@
 import { StoreItem } from "@/components/combinedGames/store"
 import { objectKeys, objectEntries } from "@/utilities/typeSafeObjects"
+import { z } from "zod"
 
 type collectFromAllWorkers = {
     type: "collectFromAllWorkers"
@@ -29,22 +30,35 @@ type combineWorkers = {
     workerIndex: number
 }
 
-export type CombinedGameReducerAction = collectFromAllWorkers | addActiveWorker | removeActiveWorker | BuyNewWorker | combineWorkers
-
-export type CombinedGameState = {
-    resources: {
-        iron: number
-        gold: number
-        diamond: number
-    }
-    resourceCollection: {
-        activeWorkerMap: Record<number, number | undefined>
-        activeWorkerList: number[]
-        resourceRateMap: Record<WorkerTypes, number>
-        workerCollection: Record<number, number>
-        activeWorkerLimit: number
-    }
+type updateState = {
+    type: "updateState",
+    newState: CombinedGameState
 }
+
+export type CombinedGameReducerAction = collectFromAllWorkers | addActiveWorker | removeActiveWorker | BuyNewWorker | combineWorkers | updateState
+
+const preProcessNumber = z.preprocess((x) => Number(x), z.number())
+
+export const combinedGameStateZod = z.object({
+    resources: z.object({
+        iron: z.number(),
+        gold: z.number(),
+        diamond: z.number()
+    }),
+    resourceCollection: z.object({
+        activeWorkerMap: z.record(preProcessNumber, z.number().or(z.undefined())),
+        activeWorkerList: z.array(preProcessNumber),
+        resourceRateMap: z.object({
+            iron: z.number(),
+            gold: z.number(),
+            diamond: z.number()
+        }),
+        workerCollection: z.record(preProcessNumber, z.number()),
+        activeWorkerLimit: z.number()
+    })
+})
+
+export type CombinedGameState = z.infer<typeof combinedGameStateZod>
 
 export const combinedGameReducer = (state: CombinedGameState, action: CombinedGameReducerAction) => {
     switch (action.type) {
@@ -120,6 +134,8 @@ export const combinedGameReducer = (state: CombinedGameState, action: CombinedGa
                 state.resourceCollection.workerCollection[action.workerIndex + 3] = 1
             else state.resourceCollection.workerCollection[action.workerIndex + 3] += 1
             return { ...state }
+        case "updateState":
+            return action.newState
         default:
             return state
     }

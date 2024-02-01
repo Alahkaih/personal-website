@@ -1,21 +1,49 @@
 "use client"
 
 import ResourceCollection from "@/components/combinedGames/resourceCollection"
-import { ReactNode, useReducer } from "react"
-import { combinedGameReducer, initialState } from "./combinedGamePageReducer"
+import { ChangeEvent, ReactNode, useReducer } from "react"
+import { combinedGameReducer, combinedGameStateZod, initialState } from "./combinedGamePageReducer"
 import ResourceHeader from "@/components/combinedGames/resourceHeader"
 import Inventory from "@/components/combinedGames/inventory"
 import Store from "@/components/combinedGames/store"
 
 export default function Combined() {
     const [state, dispatch] = useReducer(combinedGameReducer, initialState)
+    const downloadStateToURL = () => {
+       const json = JSON.stringify(state)
+       const blob = new Blob([json], {type: "application/json"});
+       return URL.createObjectURL(blob);
+    }
+
+    const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
+        const fileReader = new FileReader()
+        fileReader.readAsText(event.target.files![0], "UTF-8")
+        fileReader.onload = (e) => {
+            try {
+                if(!e.target?.result) throw new Error("No file found")
+                dispatch({
+                    type: "updateState",
+                    newState: combinedGameStateZod.parse(JSON.parse(e.target.result.toString()))
+                })
+                alert("State imported successfully")
+            } catch (error) {
+                if(error instanceof Error) {
+                    console.error(error.message)
+                    alert(error.message)
+                }
+            }
+
+        }
+    }
+
     return (
         <div className="container mx-auto p-6">
             <div className="flex justify-between mb-4">
                 <ResourceHeader state={state} />
                 <div className="flex justify-end">
-                    <button className="bg-gray-300 text-black mr-2 px-5 py-2 rounded">Import</button>
-                    <button className="bg-blue-500 text-white px-5 py-2 rounded">Export</button>
+                    <input type="file" className="hidden" id="file-input" onChange={handleFileUpload}/>
+                    <button className="bg-gray-300 text-black mr-2 px-5 py-2 rounded" onClick={() => document.getElementById("file-input")?.click()}>Import</button>
+                    <a href={downloadStateToURL()} download={"IdleGameState.json"}><button className="bg-blue-500 text-white px-5 py-2 rounded">Export</button></a>
                 </div>
             </div>
             <div className="flex flex-wrap -mx-2">
