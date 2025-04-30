@@ -12,8 +12,8 @@ export default {
         app.stack(function Site({ stack }: StackContext) {
             const site = new NextjsSite(stack, "site", {
                 customDomain: "alahkaih.com",
+                runtime: "nodejs20.x"
             })
-
             stack.addOutputs({
                 SiteUrl: site.url,
             })
